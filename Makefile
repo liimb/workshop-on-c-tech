@@ -21,7 +21,7 @@ quadratic_solver_test.o: quadratic_solver_test.c quadratic_solver.h
 	gcc -g -c quadratic_solver_test.c -o quadratic_solver_test.o
 
 quadratic_solver_test: quadratic_solver_test.o quadratic_solver.a
-	gcc -g -o quadratic_solver_test quadratic_solver_test.o quadratic_solver.a
+	gcc -g -o quadratic_solver_test quadratic_solver_test.o quadratic_solver.a -lm
 #---#
 
 test: quadratic_solver_test
