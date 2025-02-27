@@ -1,0 +1,1 @@
+double *quadratic_solver(double a, double b, double c, int *root_count);
