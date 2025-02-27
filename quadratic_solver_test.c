@@ -36,16 +36,24 @@ void test_one_root_accuracy() {
   int root_count;
   double *roots = quadratic_solver(1, 0, -1E-7, &root_count);
   assert(root_count == 2);
-  assert(roots[0] - (-3E-4) < 1E-4);
-  assert(roots[1] - (3E-4) < 1E-4);
+  assert(fabs(roots[0] - (-3E-4)) < 1E-4);
+  assert(fabs(roots[1] - (3E-4)) < 1E-4);
 }
 
 void test_two_root_accuracy() {
   int root_count;
   double *roots = quadratic_solver(1, -1E+10, -1, &root_count);
   assert(root_count == 2);
-  assert(roots[0] - (-1E-10) < 1E-11);
-  assert(roots[1] - (1E+10) < 1E-11);
+  assert(fabs(roots[0] - (-1E-10)) < 1E-11);
+  assert(fabs(roots[1] - (1E+10)) < 1E-11);
+}
+
+void test_three_root_accuracy() {
+  int root_count;
+  double *roots = quadratic_solver(1, 0, -1E-8, &root_count);
+  assert(root_count == 2);
+  assert(fabs(roots[0] - (-1E-4)) < 1E-7);
+  assert(fabs(roots[1] - 1E-4) < 1E-7);
 }
 
 int main() {
@@ -55,5 +63,6 @@ int main() {
   test_zero_root();
   test_one_root_accuracy();
   test_two_root_accuracy();
+  test_three_root_accuracy();
   return 0;
 }
