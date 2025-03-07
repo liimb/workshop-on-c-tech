@@ -2,14 +2,17 @@
 #include <math.h>
 #include <stdlib.h>
 
-double *quadratic_solver(double a, double b, double c, int *root_count) {
+double *quadratic_solver(double a, double b, double c, double eps, int *root_count) {
   if (a == 0) {
     *root_count = -1;
     double *roots = NULL;
     return roots;
   }
 
-  double d = pow(b, 2) - 4 * a * c;
+  b = b / a;
+  c = c / a;
+
+  double d = pow(b, 2) - 4 * c;
 
   if (d < 0) {
     *root_count = 0;
@@ -17,10 +20,11 @@ double *quadratic_solver(double a, double b, double c, int *root_count) {
     return roots;
   }
 
-  if (d == 0) {
+  if (d <= eps) {
+    d = 0;
     *root_count = 1;
     double *roots = (double *)malloc(1 * sizeof(double));
-    roots[0] = -b / (2 * a);
+    roots[0] = -b / 2;
     return roots;
   }
 
