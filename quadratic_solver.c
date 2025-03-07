@@ -2,7 +2,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-double *quadratic_solver(double a, double b, double c, double eps, int *root_count) {
+double *quadratic_solver(double a, double b, double c, double eps,
+                         int *root_count) {
   if (a == 0) {
     *root_count = -1;
     double *roots = NULL;
