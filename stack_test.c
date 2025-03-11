@@ -6,6 +6,8 @@ void stack_create_test() {
 
   assert(stack->size == FIRST_SIZE);
   assert(stack->top == 0);
+
+  stack_free(&stack);
 }
 
 void stack_push_test() {
@@ -15,6 +17,8 @@ void stack_push_test() {
   stack_push(&stack, 4);
 
   assert(stack->top == 3);
+
+  stack_free(&stack);
 }
 
 void stack_pop_test() {
@@ -26,6 +30,8 @@ void stack_pop_test() {
   assert(stack_pop(&stack) == 4);
   assert(stack_pop(&stack) == 3);
   assert(stack_pop(&stack) == 2);
+
+  stack_free(&stack);
 }
 
 void stack_is_empty_test() {
@@ -34,6 +40,8 @@ void stack_is_empty_test() {
   stack_pop(&stack);
 
   assert(stack_is_empty(stack) == 1);
+
+  stack_free(&stack);
 }
 
 int main() {
