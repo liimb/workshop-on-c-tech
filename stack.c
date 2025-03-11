@@ -46,3 +46,9 @@ void stack_print(stack_array *stack) {
     printf("%d \n", stack->data[i]);
   }
 }
+
+void stack_free(stack_array **stack) {
+  free((*stack)->data);
+  free(*stack);
+  *stack = NULL;
+}
