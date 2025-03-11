@@ -37,16 +37,6 @@ int stack_pop(stack_array **stack) {
   return (*stack)->data[(*stack)->top];
 }
 
-void stack_print(stack_array *stack) {
-  if (stack_is_empty(stack)) {
-    printf("стек пуст\n");
-    return;
-  }
-  for (int i = 0; i < stack->top; i++) {
-    printf("%d \n", stack->data[i]);
-  }
-}
-
 void stack_free(stack_array **stack) {
   free((*stack)->data);
   free(*stack);
