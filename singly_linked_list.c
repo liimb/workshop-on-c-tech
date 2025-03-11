@@ -170,3 +170,18 @@ void list_print(node *list) {
     printf("%i \n", last_node->value);
   }
 }
+
+void list_free(node *list) {
+  if (list == NULL) {
+    return;
+  }
+  node *temp;
+
+  while (list->next != NULL) {
+    temp = list->next;
+    free(list);
+    list = temp;
+  }
+
+  free(temp);
+}

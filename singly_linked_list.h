@@ -11,4 +11,4 @@ void list_add_start(node **list, int value);
 void list_add_middle(node **list, int value);
 void list_add_at(node **list, int index, int value);
 void list_delete_at(node **list, int index);
-void list_print(node *list);
+void list_free(node *list);
