@@ -2,12 +2,10 @@
 #include <math.h>
 #include <stdlib.h>
 
-double *quadratic_solver(double a, double b, double c, double eps,
-                         int *root_count) {
-  if (a == 0) {
-    *root_count = -1;
-    double *roots = NULL;
-    return roots;
+int quadratic_solver(double a, double b, double c, double eps, double **roots) {
+  if (fabs(a) < eps) {
+    *roots = NULL;
+    return NOT_A_QUADRATIC_EQUATION;
   }
 
   b = b / a;
@@ -15,23 +13,20 @@ double *quadratic_solver(double a, double b, double c, double eps,
 
   double d = pow(b, 2) - 4 * c;
 
-  if (d < 0) {
-    *root_count = 0;
-    double *roots = NULL;
-    return roots;
+  if (d < -eps) {
+    *roots = NULL;
+    return NO_REAL_ROOTS;
   }
 
-  if (d <= eps) {
-    d = 0;
-    *root_count = 1;
-    double *roots = (double *)malloc(1 * sizeof(double));
-    roots[0] = -b / 2;
-    return roots;
+  if (fabs(d) <= eps) {
+    *roots = (double *)malloc(1 * sizeof(double));
+    (*roots)[0] = -b / 2;
+    return ONE_ROOT;
   }
 
   int sign;
 
-  if (b >= 0) {
+  if (b >= eps) {
     sign = 1;
   } else {
     sign = -1;
@@ -40,17 +35,15 @@ double *quadratic_solver(double a, double b, double c, double eps,
   double x1 = (-b - sign * sqrt(d)) / 2;
   double x2 = c / x1;
 
-  double *roots = (double *)malloc(2 * sizeof(double));
+  *roots = (double *)malloc(2 * sizeof(double));
 
   if (x1 > x2) {
-    roots[0] = x2;
-    roots[1] = x1;
+    (*roots)[0] = x2;
+    (*roots)[1] = x1;
   } else {
-    roots[0] = x1;
-    roots[1] = x2;
+    (*roots)[0] = x1;
+    (*roots)[1] = x2;
   }
 
-  *root_count = 2;
-
-  return roots;
+  return TWO_ROOTS;
 }
