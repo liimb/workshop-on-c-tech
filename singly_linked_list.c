@@ -156,21 +156,6 @@ node *list_get_at(node **list, int index) {
   return last_node;
 }
 
-void list_print(node *list) {
-  if (list == NULL) {
-    return;
-  }
-
-  node *last_node = list;
-
-  printf("%i \n", last_node->value);
-
-  while (last_node->next != NULL) {
-    last_node = last_node->next;
-    printf("%i \n", last_node->value);
-  }
-}
-
 void list_free(node *list) {
   if (list == NULL) {
     return;
