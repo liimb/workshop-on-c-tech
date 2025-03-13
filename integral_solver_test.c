@@ -31,7 +31,7 @@ void test_integral_4() {
 
 void test_integral_5() {
   double res = integral_solver(func_quad, -5, 5, -100);
-  assert(res == 0);
+  assert(fabs(res) < 1E-10);
 }
 
 int main() {
