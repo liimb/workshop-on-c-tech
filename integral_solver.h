@@ -1,1 +1,1 @@
-double integral_solver(double (*function)(double), int a, int b, int n);
+double integral_solver(double (*function)(double), double a, double b, int n);
