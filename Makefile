@@ -10,6 +10,20 @@ fmt:
 fmt_mac:
 	find . -type f \( -name "*.c" -o -name "*.h" \) -print0 | xargs -0 clang-format -style=LLVM -i
 
+#--- task7 stack
+stack.o: stack.c stack.h
+	gcc -g -c stack.c -o stack.o
+
+stack.a: stack.o
+	ar rc stack.a stack.o
+
+stack_test.o: stack_test.c
+	gcc -g -c stack_test.c -o stack_test.o
+
+stack_test: stack_test.o stack.a
+	gcc -g -o stack_test stack_test.o stack.a -lm
+#---
+
 #--- task6 singly linked list
 singly_linked_list.o: singly_linked_list.c singly_linked_list.h
 	gcc -g -c singly_linked_list.c -o singly_linked_list.o
@@ -52,7 +66,7 @@ quadratic_solver_test: quadratic_solver_test.o quadratic_solver.a
 	gcc -g -o quadratic_solver_test quadratic_solver_test.o quadratic_solver.a -lm
 #---#
 
-test: quadratic_solver_test integral_solver_test singly_linked_list_test
+test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test
 	@for test in $(shell find . -maxdepth 1 -type f -regex '.*_test$$'); do \
 		echo "Running $$test"; \
 		./$$test || exit 1; \
