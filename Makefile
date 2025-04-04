@@ -24,7 +24,35 @@ singly_linked_list_test: singly_linked_list_test.o singly_linked_list.a
 	gcc -g -o singly_linked_list_test singly_linked_list_test.o singly_linked_list.a -lm
 #---
 
-test: singly_linked_list_test
+#--- task5 integral
+integral_solver.o: integral_solver.c integral_solver.h
+	gcc -g -c integral_solver.c -o integral_solver.o
+
+integral_solver.a: integral_solver.o
+	ar rc integral_solver.a integral_solver.o
+
+integral_solver_test.o: integral_solver_test.c
+	gcc -g -c integral_solver_test.c -o integral_solver_test.o
+
+integral_solver_test: integral_solver_test.o integral_solver.a
+	gcc -g -o integral_solver_test integral_solver_test.o integral_solver.a -lm
+#---
+
+#---# quadratic (task 4)
+quadratic_solver.o: quadratic_solver.c quadratic_solver.h
+	gcc -g -c quadratic_solver.c -o quadratic_solver.o
+
+quadratic_solver.a: quadratic_solver.o
+	ar rc quadratic_solver.a quadratic_solver.o
+
+quadratic_solver_test.o: quadratic_solver_test.c quadratic_solver.h
+	gcc -g -c quadratic_solver_test.c -o quadratic_solver_test.o
+
+quadratic_solver_test: quadratic_solver_test.o quadratic_solver.a
+	gcc -g -o quadratic_solver_test quadratic_solver_test.o quadratic_solver.a -lm
+#---#
+
+test: quadratic_solver_test integral_solver_test singly_linked_list_test
 	@for test in $(shell find . -maxdepth 1 -type f -regex '.*_test$$'); do \
 		echo "Running $$test"; \
 		./$$test || exit 1; \
