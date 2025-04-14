@@ -80,6 +80,20 @@ pool_allocator_test: pool_allocator_test.o pool_allocator.a
 	gcc -g -o pool_allocator_test pool_allocator_test.o pool_allocator.a -lm
 #---
 
+#--- hashtable
+hash_table.o: hash_table.c hash_table.h pool_allocator.h
+	gcc -g -c hash_table.c -o hash_table.o
+
+hash_table.a: hash_table.o pool_allocator.a
+	ar rc hash_table.a hash_table.o
+
+hash_table_test.o: hash_table_test.c hash_table.h pool_allocator.h
+	gcc -g -c hash_table_test.c -o hash_table_test.o
+
+hash_table_test: hash_table_test.o hash_table.a pool_allocator.a
+	gcc -g -o hash_table_test hash_table_test.o hash_table.a pool_allocator.a -lm
+#---
+
 test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test pool_allocator_test
 	@for test in $(shell find . -maxdepth 1 -type f -regex '.*_test$$'); do \
 		echo "Running $$test"; \
