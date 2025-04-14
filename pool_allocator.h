@@ -1,3 +1,6 @@
+#ifndef POOL_ALLOCATOR_H
+#define POOL_ALLOCATOR_H
+
 #include <stdio.h>
 
 typedef struct block {
@@ -17,3 +20,5 @@ pool_allocator *pool_init(size_t block_size, size_t block_count);
 void *pool_alloc(void *allocator);
 void pool_free(void *allocator, void *ptr);
 void pool_close(void *allocator);
+
+#endif
