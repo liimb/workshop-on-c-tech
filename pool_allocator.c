@@ -47,7 +47,7 @@ void *pool_alloc(void *allocator) {
   current_block->next = pool->used_blocks;
   pool->used_blocks = current_block;
 
-  return (void *)(current_block->data);
+  return (void *)(current_block);
 }
 
 void pool_free(void *allocator, void *ptr) {
