@@ -17,6 +17,31 @@ void hashtable_init(hash_table *table, size_t capacity,
   allocator = pool_init(sizeof(hashtable_item), capacity);
 
   for (size_t i = 0; i < capacity; i++) {
-    table->items[i] = (hashtable_item *)pool_alloc(allocator);
+    hashtable_item* item = table->items[i];
+    item = (hashtable_item *)pool_alloc(allocator);
+    item->key = NULL;
+    item->value = NULL;
+    item->is_deleted = 0;
+    item->is_occupied = 0;
   }
+}
+
+void hashtable_insert(hash_table *table, const char *key, void *value) {
+  size_t hash = hash_func(key, table->capacity);
+
+  
+}
+
+void* hashtable_get(hash_table *table, const char *key) {
+
+  return 0;
+
+}
+
+void hashtable_del(hash_table *table, const char *key) {
+
+}
+
+void hashtable_free(hash_table *table) {
+
 }
