@@ -53,9 +53,28 @@ void *pool_alloc(void *allocator) {
 void pool_free(void *allocator, void *ptr) {
   pool_allocator *pool = (pool_allocator *)allocator;
 
-  block *block_to_free = ptr;
-  block_to_free->next = pool->free_blocks;
-  pool->free_blocks = block_to_free;
+  block *block_to_free = (block *)(ptr);
+
+  block *prev = NULL;
+  block *curr = pool->used_blocks;
+
+  while (curr != NULL) {
+    if (curr == block_to_free) {
+      if (prev == NULL) {
+        pool->used_blocks = curr->next;
+      } else {
+        prev->next = curr->next;
+      }
+
+      block_to_free->next = pool->free_blocks;
+      pool->free_blocks = block_to_free;
+
+      return;
+    }
+
+    prev = curr;
+    curr = curr->next;
+  }
 }
 
 void pool_close(void *allocator) {
