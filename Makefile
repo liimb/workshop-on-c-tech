@@ -66,7 +66,21 @@ quadratic_solver_test: quadratic_solver_test.o quadratic_solver.a
 	gcc -g -o quadratic_solver_test quadratic_solver_test.o quadratic_solver.a -lm
 #---#
 
-test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test
+#--- linear_allocator
+linear_allocator.o: linear_allocator.c linear_allocator.h
+	gcc -g -c linear_allocator.c -o linear_allocator.o
+
+linear_allocator.a: linear_allocator.o
+	ar rc linear_allocator.a linear_allocator.o
+
+linear_allocator_test.o: linear_allocator_test.c linear_allocator.h
+	gcc -g -c linear_allocator_test.c -o linear_allocator_test.o
+
+linear_allocator_test: linear_allocator_test.o linear_allocator.a
+	gcc -g -o linear_allocator_test linear_allocator_test.o linear_allocator.a -lm
+#---
+
+test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test linear_allocator_test
 	@for test in $(shell find . -maxdepth 1 -type f -regex '.*_test$$'); do \
 		echo "Running $$test"; \
 		./$$test || exit 1; \
