@@ -17,7 +17,8 @@ hash_table *hashtable_init(size_t capacity, pool_allocator *allocator) {
 
   allocator = pool_init(total_size, 1);
 
-  if (!allocator) return NULL;
+  if (!allocator)
+    return NULL;
 
   hash_table *table = (hash_table *)pool_alloc(allocator);
   if (!table) {
