@@ -10,7 +10,7 @@ fmt:
 fmt_mac:
 	find . -type f \( -name "*.c" -o -name "*.h" \) -print0 | xargs -0 clang-format -style=LLVM -i
 
-#--- task7 stack
+#--- stack
 stack.o: stack.c stack.h
 	gcc -g -c stack.c -o stack.o
 
@@ -24,7 +24,7 @@ stack_test: stack_test.o stack.a
 	gcc -g -o stack_test stack_test.o stack.a -lm
 #---
 
-#--- task6 singly linked list
+#--- singly linked list
 singly_linked_list.o: singly_linked_list.c singly_linked_list.h
 	gcc -g -c singly_linked_list.c -o singly_linked_list.o
 
@@ -38,7 +38,7 @@ singly_linked_list_test: singly_linked_list_test.o singly_linked_list.a
 	gcc -g -o singly_linked_list_test singly_linked_list_test.o singly_linked_list.a -lm
 #---
 
-#--- task5 integral
+#--- integral
 integral_solver.o: integral_solver.c integral_solver.h
 	gcc -g -c integral_solver.c -o integral_solver.o
 
@@ -52,7 +52,7 @@ integral_solver_test: integral_solver_test.o integral_solver.a
 	gcc -g -o integral_solver_test integral_solver_test.o integral_solver.a -lm
 #---
 
-#---# quadratic (task 4)
+#---# quadratic
 quadratic_solver.o: quadratic_solver.c quadratic_solver.h
 	gcc -g -c quadratic_solver.c -o quadratic_solver.o
 
@@ -80,7 +80,21 @@ linear_allocator_test: linear_allocator_test.o linear_allocator.a
 	gcc -g -o linear_allocator_test linear_allocator_test.o linear_allocator.a -lm
 #---
 
-test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test linear_allocator_test
+#--- pool_allocator
+pool_allocator.o: pool_allocator.c pool_allocator.h
+	gcc -g -c pool_allocator.c -o pool_allocator.o
+
+pool_allocator.a: pool_allocator.o
+	ar rc pool_allocator.a pool_allocator.o
+
+pool_allocator_test.o: pool_allocator_test.c pool_allocator.h
+	gcc -g -c pool_allocator_test.c -o pool_allocator_test.o
+
+pool_allocator_test: pool_allocator_test.o pool_allocator.a
+	gcc -g -o pool_allocator_test pool_allocator_test.o pool_allocator.a -lm
+#---
+
+test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test pool_allocator_test
 	@for test in $(shell find . -maxdepth 1 -type f -regex '.*_test$$'); do \
 		echo "Running $$test"; \
 		./$$test || exit 1; \
