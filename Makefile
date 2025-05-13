@@ -95,17 +95,17 @@ linear_allocator_test: linear_allocator_test.o linear_allocator.a
 #---
 
 #--- array_list
-array_list.o: array_list.c array_list.h
+array_list.o: array_list.c array_list.h linear_allocator.h
 	gcc -g -c array_list.c -o array_list.o
 
-array_list.a: array_list.o
+array_list.a: array_list.o linear_allocator.a
 	ar rc array_list.a array_list.o
 
-array_list_test.o: array_list_test.c
+array_list_test.o: array_list_test.c linear_allocator.h
 	gcc -g -c array_list_test.c -o array_list_test.o
 
-array_list_test: array_list_test.o array_list.a
-	gcc -g -o array_list_test array_list_test.o array_list.a -lm
+array_list_test: array_list_test.o array_list.a linear_allocator.a
+	gcc -g -o array_list_test array_list_test.o array_list.a linear_allocator.a -lm
 #---
 
 test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test pool_allocator_test linear_allocator_test array_list_test
