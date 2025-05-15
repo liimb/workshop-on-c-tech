@@ -12,77 +12,76 @@ size_t hash_func(const char *key, size_t capacity) {
   return hash % capacity;
 }
 
-hash_table *hashtable_init(size_t capacity, pool_allocator *allocator) {
-  size_t total_size = sizeof(hash_table) + sizeof(hashtable_item) * capacity;
+void hashtable_init(size_t capacity, size_t value_size,
+                    pool_allocator *allocator, hash_table *table) {
+  size_t total_size = sizeof(hashtable_item) + value_size;
 
-  allocator = pool_init(total_size, 1);
+  allocator = pool_init(total_size, capacity);
 
   if (!allocator)
-    return NULL;
-
-  hash_table *table = (hash_table *)pool_alloc(allocator);
-  if (!table) {
-    pool_close(allocator);
-    return NULL;
-  }
+    return;
 
   table->allocator = allocator;
   table->capacity = capacity;
+  table->value_size = value_size;
+  table->items = allocator->memory;
 
   for (size_t i = 0; i < capacity; i++) {
-    table->items[i].key = NULL;
-    table->items[i].value = NULL;
-    table->items[i].is_deleted = 0;
-    table->items[i].is_occupied = 0;
+    hashtable_item *new_item = (hashtable_item *)pool_alloc(table->allocator);
+    new_item->key = NULL;
+    new_item->value = NULL;
+    new_item->is_deleted = 0;
+    new_item->is_occupied = 0;
   }
-
-  return table;
 }
 
 void hashtable_insert(hash_table *table, const char *key, void *value) {
   size_t hash = hash_func(key, table->capacity);
-  size_t original_hash = hash;
+  size_t steps = 0;
+  size_t item_size = sizeof(hashtable_item) + table->value_size;
 
-  int a = 0;
-
-  while (a <= table->capacity) {
-    if (hash >= (table->capacity)) {
+  while (steps < table->capacity) {
+    if (hash >= table->capacity) {
       hash = 0;
     }
 
-    if (table->items[hash].is_occupied == 0 || table->items[hash].is_deleted) {
-      table->items[hash].value = value;
-      table->items[hash].key = key;
-      table->items[hash].is_occupied = 1;
-      table->items[hash].is_deleted = 0;
+    void *block = (char *)table->allocator->memory + hash * item_size;
+    hashtable_item *item = (hashtable_item *)block;
+    void *val_ptr = (char *)block + sizeof(hashtable_item);
+
+    if (!item->is_occupied || item->is_deleted) {
+      memcpy(val_ptr, value, table->value_size);
+      item->key = key;
+      item->is_occupied = 1;
+      item->is_deleted = 0;
+      item->value = val_ptr;
       return;
-    } else if (table->items[hash].is_occupied &&
-               table->items[hash].key != NULL &&
-               strcmp(table->items[hash].key, key) == 0) {
-      table->items[hash].value = value;
-      table->items[hash].is_deleted = 0;
+    } else if (item->is_occupied && item->key && strcmp(item->key, key) == 0) {
+      memcpy(item->value, value, table->value_size);
+      item->is_deleted = 0;
       return;
     }
 
-    a++;
     hash++;
+    steps++;
   }
 }
 
 void *hashtable_get(hash_table *table, const char *key) {
   size_t hash = hash_func(key, table->capacity);
-  int a = 0;
+  size_t steps = 0;
+  size_t item_size = sizeof(hashtable_item) + table->value_size;
 
-  while (a < table->capacity) {
-    if (hash >= (table->capacity)) {
+  while (steps < table->capacity) {
+    if (hash >= table->capacity) {
       hash = 0;
     }
 
-    hashtable_item *item = &table->items[hash];
+    void *block = (char *)table->allocator->memory + hash * item_size;
+    hashtable_item *item = (hashtable_item *)block;
 
     if (item->is_occupied) {
-      if (!item->is_deleted && item->key != NULL &&
-          strcmp(item->key, key) == 0) {
+      if (!item->is_deleted && item->key && strcmp(item->key, key) == 0) {
         return item->value;
       }
     } else if (!item->is_occupied && !item->is_deleted) {
@@ -90,7 +89,7 @@ void *hashtable_get(hash_table *table, const char *key) {
     }
 
     hash++;
-    a++;
+    steps++;
   }
 
   return NULL;
@@ -98,25 +97,30 @@ void *hashtable_get(hash_table *table, const char *key) {
 
 void hashtable_delete(hash_table *table, const char *key) {
   size_t hash = hash_func(key, table->capacity);
-  int steps = 0;
+  size_t steps = 0;
+  size_t item_size = sizeof(hashtable_item) + table->value_size;
 
   while (steps < table->capacity) {
-    hashtable_item *item = &table->items[hash];
+    if (hash >= table->capacity) {
+      hash = 0;
+    }
+
+    void *block = (char *)table->allocator->memory + hash * item_size;
+    hashtable_item *item = (hashtable_item *)block;
 
     if (item->is_occupied) {
-      if (!item->is_deleted && item->key != NULL &&
-          strcmp(item->key, key) == 0) {
+      if (!item->is_deleted && item->key && strcmp(item->key, key) == 0) {
         item->is_deleted = 1;
         item->is_occupied = 0;
-        item->value = NULL;
         item->key = NULL;
+        item->value = NULL;
         return;
       }
     } else if (!item->is_occupied && !item->is_deleted) {
       return;
     }
 
-    hash = (hash + 1) % table->capacity;
+    hash++;
     steps++;
   }
 }
