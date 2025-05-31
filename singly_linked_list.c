@@ -157,16 +157,12 @@ node *list_get_at(node **list, int index) {
 }
 
 void list_free(node *list) {
-  if (list == NULL) {
-    return;
-  }
-  node *temp;
-
-  while (list->next != NULL) {
-    temp = list->next;
-    free(list);
-    list = temp;
-  }
-
-  free(temp);
+    node *current = list;
+    node *next = NULL;
+    
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
 }
