@@ -99,4 +99,3 @@ test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_t
 		echo "Running $$test"; \
 		./$$test || exit 1; \
 	done
-	
