@@ -100,5 +100,5 @@ test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_t
 		valgrind --leak-check=full --show-leak-kinds=all \
 		         --track-origins=yes --error-exitcode=1 \
 		         ./$$test || exit 1; \
-		echo ""; 
-	done;
+		echo ""; \
+	done
