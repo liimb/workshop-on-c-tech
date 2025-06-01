@@ -97,6 +97,8 @@ linear_allocator_test: linear_allocator_test.o linear_allocator.a
 test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test pool_allocator_test linear_allocator_test
 	@for test in $(shell find . -maxdepth 1 -type f -regex '.*_test$$'); do \
 		echo "Running $$test"; \
-		./$$test || exit 1; \
-	done
-	
+		valgrind --leak-check=full --show-leak-kinds=all \
+		         --track-origins=yes --error-exitcode=1 \
+		         ./$$test || exit 1; \
+		echo ""; 
+	done;
