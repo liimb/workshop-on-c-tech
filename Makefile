@@ -94,7 +94,21 @@ linear_allocator_test: linear_allocator_test.o linear_allocator.a
 	gcc -g -o linear_allocator_test linear_allocator_test.o linear_allocator.a -lm
 #---
 
-test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test pool_allocator_test linear_allocator_test
+#--- gc
+gc.o: gc.c gc.h
+	gcc -g -c gc.c -o gc.o
+
+gc.a: gc.o
+	ar rc gc.a gc.o
+
+gc_test.o: gc_test.c gc.h
+	gcc -g -c gc_test.c -o gc_test.o
+
+gc_test: gc_test.o gc.a
+	gcc -g -o gc_test gc_test.o gc.a pool_allocator.a -lm
+#---
+
+test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test pool_allocator_test linear_allocator_test gc_test
 	@for test in $(shell find . -maxdepth 1 -type f -regex '.*_test$$'); do \
 		echo "Running $$test"; \
 		valgrind --leak-check=full --show-leak-kinds=all \
