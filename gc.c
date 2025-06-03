@@ -1,6 +1,15 @@
 #include "gc.h"
 
+void default_constructor(void *object) { (void)object; }
+
+void default_destructor(void *object) { (void)object; }
+
 int ref_count_create(ref_count_t **out_ref, void *object, ref_context ctx) {
+  return ref_count_create_ext(out_ref, object, ctx, NULL, NULL);
+}
+
+int ref_count_create_ext(ref_count_t **out_ref, void *object, ref_context ctx,
+                         ctor constructor, dtor destructor) {
   if (!out_ref || !ctx.alloc)
     return ERROR;
 
@@ -12,6 +21,11 @@ int ref_count_create(ref_count_t **out_ref, void *object, ref_context ctx) {
   ref->object = object;
   ref->dependencies = NULL;
   ref->ref_ctx = ctx;
+  ref->constructor = constructor ? constructor : default_constructor;
+  ref->destructor = destructor ? destructor : default_destructor;
+
+  if (ref->constructor && object)
+    ref->constructor(object);
 
   *out_ref = ref;
   return SUCCESS;
@@ -62,6 +76,10 @@ int ref_count_release(ref_count_t *ref) {
 
     void *mem_ctx = ref->ref_ctx.mem_context;
     void (*dealloc)(void *, void *) = ref->ref_ctx.dealloc;
+
+    if (ref->object) {
+      ref->destructor(ref->object);
+    }
 
     dealloc(mem_ctx, ref);
   }
