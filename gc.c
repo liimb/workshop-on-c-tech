@@ -60,7 +60,10 @@ int ref_count_release(ref_count_t *ref) {
     }
     ref->dependencies = NULL;
 
-    ref->ref_ctx.dealloc(ref->ref_ctx.mem_context, ref);
+    void *mem_ctx = ref->ref_ctx.mem_context;
+    void (*dealloc)(void *, void *) = ref->ref_ctx.dealloc;
+
+    dealloc(mem_ctx, ref);
   }
 
   return SUCCESS;

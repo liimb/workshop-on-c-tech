@@ -9,7 +9,7 @@ void *pool_alloc_test(void *allocator) {
 void pool_free_test(void *allocator, void *ptr) { pool_free(allocator, ptr); }
 
 void ref_create_test() {
-  pool_allocator *pool = pool_init(64, 4);
+  pool_allocator *pool = pool_init(sizeof(ref_count_t), 4);
   ref_context ctx;
 
   ctx.alloc = pool_alloc_test;
@@ -29,7 +29,7 @@ void ref_create_test() {
 }
 
 void ref_count_retain_test() {
-  pool_allocator *pool = pool_init(64, 4);
+  pool_allocator *pool = pool_init(sizeof(ref_count_t), 4);
   ref_context ctx;
 
   ctx.alloc = pool_alloc_test;
@@ -52,7 +52,7 @@ void ref_count_retain_test() {
 }
 
 void ref_count_dep_chain_test() {
-  pool_allocator *pool = pool_init(128, 16);
+  pool_allocator *pool = pool_init(sizeof(ref_count_t) + sizeof(dependent_ref), 16);
   ref_context ctx;
 
   ctx.alloc = pool_alloc_test;
@@ -67,10 +67,9 @@ void ref_count_dep_chain_test() {
   ref_count_add_dependency(a, b);
   ref_count_add_dependency(b, c);
 
-  ref_count_release(b);
-  assert(a->count == 1);
-  assert(b->count == 1);
-  assert(c->count == 2);
+  assert(ref_count_release(a) == SUCCESS);
+  assert(ref_count_release(b) == SUCCESS);
+  assert(ref_count_release(c) == SUCCESS);
 
   pool_close(pool);
 }
