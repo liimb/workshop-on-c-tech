@@ -52,7 +52,8 @@ void ref_count_retain_test() {
 }
 
 void ref_count_dep_chain_test() {
-  pool_allocator *pool = pool_init(sizeof(ref_count_t) + sizeof(dependent_ref), 16);
+  pool_allocator *pool =
+      pool_init(sizeof(ref_count_t) + sizeof(dependent_ref), 16);
   ref_context ctx;
 
   ctx.alloc = pool_alloc_test;
