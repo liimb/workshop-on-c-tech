@@ -35,7 +35,8 @@ void ref_ctor_dtor_test() {
   ref_count_t *ref = NULL;
   my_object *obj = malloc(sizeof(my_object));
 
-  int res = ref_count_create_ext(&ref, &obj, ctx, my_constructor, my_destructor);
+  int res =
+      ref_count_create_ext(&ref, &obj, ctx, my_constructor, my_destructor);
 
   assert(ref->constructor == my_constructor);
   assert(ref->destructor == my_destructor);
