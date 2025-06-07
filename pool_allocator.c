@@ -47,13 +47,13 @@ void *pool_alloc(void *allocator) {
   current_block->next = pool->used_blocks;
   pool->used_blocks = current_block;
 
-  return (void *)(current_block);
+  return (void *)(current_block->data);
 }
 
 void pool_free(void *allocator, void *ptr) {
   pool_allocator *pool = (pool_allocator *)allocator;
 
-  block *block_to_free = (block *)(ptr);
+  block *block_to_free = (block *)((char *)ptr - sizeof(block));
 
   block *prev = NULL;
   block *curr = pool->used_blocks;
