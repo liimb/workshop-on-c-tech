@@ -17,7 +17,7 @@ void ref_create_test() {
   ctx.mem_context = pool;
 
   ref_count_t *ref = NULL;
-  int res = ref_count_create(&ref, NULL, ctx);
+  int res = ref_count_create(&ref, NULL, &ctx);
   assert(res == SUCCESS);
   assert(ref != NULL);
   assert(ref->count == 1);
@@ -37,7 +37,7 @@ void ref_count_retain_test() {
   ctx.mem_context = pool;
 
   ref_count_t *ref = NULL;
-  ref_count_create(&ref, NULL, ctx);
+  ref_count_create(&ref, NULL, &ctx);
   assert(ref->count == 1);
   ref_count_retain(ref);
   assert(ref->count == 2);
@@ -61,9 +61,9 @@ void ref_count_dep_chain_test() {
   ctx.mem_context = pool;
 
   ref_count_t *a = NULL, *b = NULL, *c = NULL;
-  ref_count_create(&a, NULL, ctx);
-  ref_count_create(&b, NULL, ctx);
-  ref_count_create(&c, NULL, ctx);
+  ref_count_create(&a, NULL, &ctx);
+  ref_count_create(&b, NULL, &ctx);
+  ref_count_create(&c, NULL, &ctx);
 
   ref_count_add_dependency(a, b);
   ref_count_add_dependency(b, c);

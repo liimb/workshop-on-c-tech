@@ -7,6 +7,7 @@ typedef struct ref_context {
   void *(*alloc)(void *allocator);
   void (*dealloc)(void *allocator, void *ptr);
   void *mem_context;
+  struct ref_count_t *all_refs_head;
 } ref_context;
 
 typedef struct dependent_ref {
@@ -23,11 +24,13 @@ typedef struct ref_count_t {
   ctor constructor;
   dtor destructor;
   dependent_ref *dependencies;
-  ref_context ref_ctx;
+  ref_context *ref_ctx;
+  struct ref_count_t *next_global;
+  int marked;
 } ref_count_t;
 
-int ref_count_create(ref_count_t **out_ref, void *object, ref_context ctx);
-int ref_count_create_ext(ref_count_t **out_ref, void *object, ref_context ctx,
+int ref_count_create(ref_count_t **out_ref, void *object, ref_context *ctx);
+int ref_count_create_ext(ref_count_t **out_ref, void *object, ref_context *ctx,
                          ctor constructor, dtor destructor);
 int ref_count_retain(ref_count_t *ref);
 int ref_count_release(ref_count_t *ref);
@@ -35,3 +38,5 @@ int ref_count_add_dependency(ref_count_t *parent, ref_count_t *child);
 
 void default_constructor(void *object);
 void default_destructor(void *object);
+
+void gc_collect(ref_context *ctx);
