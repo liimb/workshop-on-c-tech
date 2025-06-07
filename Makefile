@@ -94,6 +94,20 @@ linear_allocator_test: linear_allocator_test.o linear_allocator.a
 	gcc -g -o linear_allocator_test linear_allocator_test.o linear_allocator.a -lm
 #---
 
+#--- hashtable
+hash_table.o: hash_table.c hash_table.h pool_allocator.h
+	gcc -g -c hash_table.c -o hash_table.o
+
+hash_table.a: hash_table.o pool_allocator.a
+	ar rc hash_table.a hash_table.o
+
+hash_table_test.o: hash_table_test.c hash_table.h pool_allocator.h
+	gcc -g -c hash_table_test.c -o hash_table_test.o
+
+hash_table_test: hash_table_test.o hash_table.a pool_allocator.a
+	gcc -g -o hash_table_test hash_table_test.o hash_table.a pool_allocator.a -lm
+#---
+
 #--- array_list
 array_list.o: array_list.c array_list.h linear_allocator.h
 	gcc -g -c array_list.c -o array_list.o
@@ -108,7 +122,7 @@ array_list_test: array_list_test.o array_list.a linear_allocator.a
 	gcc -g -o array_list_test array_list_test.o array_list.a linear_allocator.a -lm
 #---
 
-test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test pool_allocator_test linear_allocator_test array_list_test
+test: quadratic_solver_test integral_solver_test singly_linked_list_test stack_test pool_allocator_test linear_allocator_test array_list_test hash_table_test
 	@for test in $(shell find . -maxdepth 1 -type f -regex '.*_test$$'); do \
 		echo "Running $$test"; \
 		valgrind --leak-check=full --show-leak-kinds=all \
