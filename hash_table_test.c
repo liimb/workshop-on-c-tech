@@ -3,10 +3,9 @@
 #include <stdint.h>
 
 void init_test() {
-  pool_allocator pool;
   hash_table table;
 
-  hashtable_init(10, sizeof(int), &pool, &table);
+  hashtable_init(10, sizeof(int), &table);
 
   assert(table.capacity == 10);
 
@@ -14,10 +13,9 @@ void init_test() {
 }
 
 void insert_test() {
-  pool_allocator pool;
   hash_table table;
 
-  hashtable_init(10, sizeof(int), &pool, &table);
+  hashtable_init(10, sizeof(int), &table);
 
   int a = 123;
   int b = 1234;
@@ -38,7 +36,7 @@ void delete_test() {
   pool_allocator pool;
   hash_table table;
 
-  hashtable_init(10, sizeof(int), &pool, &table);
+  hashtable_init(10, sizeof(int), &table);
 
   int a = 123;
 
@@ -57,7 +55,7 @@ void capacity_test() {
   pool_allocator pool;
   hash_table table;
 
-  hashtable_init(10, sizeof(int), &pool, &table);
+  hashtable_init(10, sizeof(int), &table);
 
   int a = 1;
   int b = 2;

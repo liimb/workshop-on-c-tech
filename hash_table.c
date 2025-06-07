@@ -12,12 +12,10 @@ size_t hash_func(const char *key, size_t capacity) {
   return hash % capacity;
 }
 
-void hashtable_init(size_t capacity, size_t value_size,
-                    pool_allocator *allocator, hash_table *table) {
+void hashtable_init(size_t capacity, size_t value_size, hash_table *table) {
   size_t total_size = sizeof(hashtable_item) + value_size;
 
-  allocator = pool_init(total_size, capacity);
-
+  pool_allocator *allocator = pool_init(total_size, capacity);
   if (!allocator)
     return;
 
@@ -27,11 +25,12 @@ void hashtable_init(size_t capacity, size_t value_size,
   table->items = allocator->memory;
 
   for (size_t i = 0; i < capacity; i++) {
-    hashtable_item *new_item = (hashtable_item *)pool_alloc(table->allocator);
-    new_item->key = NULL;
-    new_item->value = NULL;
-    new_item->is_deleted = 0;
-    new_item->is_occupied = 0;
+    void *block = (char *)table->allocator->memory + i * total_size;
+    hashtable_item *item = (hashtable_item *)block;
+    item->key = NULL;
+    item->value = NULL;
+    item->is_deleted = 0;
+    item->is_occupied = 0;
   }
 }
 
