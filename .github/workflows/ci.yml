@@ -14,10 +14,10 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y valgrind gcc make
+          sudo apt-get install -y valgrind gcc make clang-format
 
       - name: Checkstyle
         run: make check_fmt
- 
+
       - name: Test
         run: make test
