@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,8 +16,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y valgrind gcc make clang-format
 
-      - name: Check code style
+      - name: Checkstyle
         run: make check_fmt
 
-      - name: Build and run all tests
+      - name: Test
         run: make test
